@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Pomodoro Timer - Command Line (Windows-friendly)
 Usage examples:
@@ -16,13 +15,12 @@ def beep(times=2, no_beep=False):
     if no_beep:
         return
     try:
-        import winsound  # Works on Windows
+        import winsound 
         for _ in range(times):
             winsound.Beep(880, 300)
             time.sleep(0.1)
             winsound.Beep(660, 300)
     except Exception:
-        # Fallback terminal bell (may or may not make a sound depending on terminal)
         for _ in range(times):
             print('\a', end='', flush=True)
             time.sleep(0.3)
@@ -40,7 +38,7 @@ def log_event(phase, minutes):
                 f.write("timestamp,phase,minutes\n")
             f.write(line)
     except Exception:
-        pass  # Logging is non-critical
+        pass 
 
 def fmt_mmss(seconds: int) -> str:
     m = seconds // 60
@@ -50,40 +48,39 @@ def fmt_mmss(seconds: int) -> str:
 def countdown(total_seconds: int, label: str):
     start = time.time()
     try:
-        for remaining in range(total_seconds, -1, -1):
-            # Progress bar
+        for remaining in range(total_seconds, -1, -1)
             bar_len = 28
             done = int(bar_len * (total_seconds - remaining) / max(total_seconds, 1))
             bar = "█" * done + "-" * (bar_len - done)
             print(f"\r{label} |{bar}| {fmt_mmss(remaining)} remaining", end="", flush=True)
             time.sleep(1)
-        print()  # newline after loop
+        print()  
     except KeyboardInterrupt:
-        print("\n⏹  Stopped by user.")
+        print("\n  Stopped by user.")
         raise
 
 def run(work: int, short: int, long: int, cycles: int, no_beep: bool):
-    print("🍅 Pomodoro Timer")
+    print(" Pomodoro Timer")
     print(f"Work: {work}m | Short break: {short}m | Long break: {long}m | Cycles: {cycles}")
     try:
         for i in range(1, cycles + 1):
-            print(f"\n▶️  Pomodoro {i}/{cycles}")
+            print(f"\n  Pomodoro {i}/{cycles}")
             countdown(work * 60, "Work     ")
             log_event("work", work)
             beep(no_beep=no_beep)
             if i == cycles:
                 break
             if i % 4 == 0:
-                print("🌿 Long break")
+                print(" Long break")
                 countdown(long * 60, "LongBreak")
                 log_event("long_break", long)
                 beep(no_beep=no_beep)
             else:
-                print("☕ Short break")
+                print("Short break")
                 countdown(short * 60, "ShortBrk ")
                 log_event("short_break", short)
                 beep(no_beep=no_beep)
-        print("\n✅ All cycles complete. Great job!")
+        print("\n All cycles complete. Great job!")
         beep(times=3, no_beep=no_beep)
     except KeyboardInterrupt:
         print("Session ended early. Progress saved to pomodoro_log.csv (if writable).")
